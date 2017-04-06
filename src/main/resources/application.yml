@@ -1,0 +1,6 @@
+AzureAD:
+  appId: "219f63e8-5004-4bf0-b4eb-ca3c395be9ad"
+  identityMetaData: "https://login.microsoftonline.com/architech.onmicrosoft.com/v2.0/.well-known/openid-configuration"
+
+database:
+  connectionString: "mongodb://architechtraining:Dpyqrod65uGmZq6TVcji0UJwWMzImNxwXaATD7S2pVOOy046k1DQbYJ7Hq5aQOWtzz7sOlzG1T0S8JcRyW3oaQ==@architechtraining.documents.azure.com:10250/yaba/?ssl=true"
