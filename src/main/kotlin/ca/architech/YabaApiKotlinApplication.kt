@@ -9,3 +9,5 @@ class YabaApiKotlinApplication
 fun main(args: Array<String>) {
     SpringApplication.run(YabaApiKotlinApplication::class.java, *args)
 }
+
+
