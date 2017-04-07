@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import javax.servlet.http.HttpServletResponse
 
 /**
  * Simple RestController to demonstrate OAuth2 Authorized Code Grant flow
@@ -14,26 +16,37 @@ class BlogController(@Autowired
                      val repository: PostRepository) {
 
     @GetMapping()
-    fun getPosts(): ResponseEntity<Array<Post>> {
-        val posts = repository.findAll().toTypedArray()
-        return ResponseEntity(posts, HttpStatus.OK)
+    fun getPosts(): List<Post> {
+        return repository.findAll()
     }
 
     @GetMapping(value = "/{id}")
-    fun getPost(@PathVariable id: String): ResponseEntity<Post> {
-        val post = repository.findOne(id)
-        return ResponseEntity(post, HttpStatus.OK)
+    fun getPost(@PathVariable id: String, response: HttpServletResponse): Post? {
+        val post = repository.findById(id)
+        if(post == null) response.status = 404 //NOT FOUND
+        return post
     }
 
     @PostMapping()
-    fun createPost(post: Post): ResponseEntity<HttpStatus> {
-        repository.insert(post)
-        return ResponseEntity(HttpStatus.CREATED)
+    fun createPost(@RequestBody post: Post): ResponseEntity<HttpStatus> {
+        val newPost = repository.insert(post)
+        val uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newPost.id)
+                .toUri()
+        return ResponseEntity.created(uri).build()
     }
 
     @DeleteMapping("/{id}")
     fun deletePost(@PathVariable id: String): ResponseEntity<HttpStatus> {
-        repository.delete(id)
-        return ResponseEntity(HttpStatus.OK)
+        val post = repository.findById(id)
+
+        if(post == null) {
+            repository.delete(id)
+            return ResponseEntity(HttpStatus.ACCEPTED)
+        }
+
+        return ResponseEntity(HttpStatus.BAD_REQUEST)
     }
 }
