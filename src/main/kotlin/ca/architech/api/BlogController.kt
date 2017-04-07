@@ -1,34 +1,39 @@
 package ca.architech.api
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 
 /**
  * Simple RestController to demonstrate OAuth2 Authorized Code Grant flow
  */
 @RestController
+@RequestMapping("/api/posts")
 class BlogController(@Autowired
                      val repository: PostRepository) {
 
-    @RequestMapping("/api/posts")
-    fun getPosts() : Array<Post> {
-        return repository.findAll().toTypedArray()
-    }
-    @RequestMapping("/api/posts:id")
-    fun getPost(id: String) : Post {
-        return repository.findOne(id)
+    @GetMapping()
+    fun getPosts(): ResponseEntity<Array<Post>> {
+        val posts = repository.findAll().toTypedArray()
+        return ResponseEntity(posts, HttpStatus.OK)
     }
 
-    @PostMapping("/api/posts")
-    fun createPost(post: Post) {
+    @GetMapping(value = "/{id}")
+    fun getPost(@PathVariable id: String): ResponseEntity<Post> {
+        val post = repository.findOne(id)
+        return ResponseEntity(post, HttpStatus.OK)
+    }
+
+    @PostMapping()
+    fun createPost(post: Post): ResponseEntity<HttpStatus> {
         repository.insert(post)
+        return ResponseEntity(HttpStatus.CREATED)
     }
 
-    @DeleteMapping("/api/posts:id")
-    fun deletePost(id: String) {
+    @DeleteMapping("/{id}")
+    fun deletePost(@PathVariable id: String): ResponseEntity<HttpStatus> {
         repository.delete(id)
+        return ResponseEntity(HttpStatus.OK)
     }
 }
