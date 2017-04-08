@@ -47,6 +47,6 @@ class BlogController(@Autowired
             return ResponseEntity(HttpStatus.ACCEPTED)
         }
 
-        return ResponseEntity(HttpStatus.BAD_REQUEST)
+        return ResponseEntity(HttpStatus.NOT_FOUND)
     }
 }
