@@ -42,7 +42,7 @@ class BlogController(@Autowired
     fun deletePost(@PathVariable id: String): ResponseEntity<HttpStatus> {
         val post = repository.findById(id)
 
-        if(post == null) {
+        if(post != null) {
             repository.delete(id)
             return ResponseEntity(HttpStatus.ACCEPTED)
         }
