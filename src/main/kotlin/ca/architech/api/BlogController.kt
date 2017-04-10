@@ -1,5 +1,6 @@
 package ca.architech.api
 
+import org.apache.commons.logging.LogFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,6 +15,8 @@ import javax.servlet.http.HttpServletResponse
 @RequestMapping("/api/posts")
 class BlogController(@Autowired
                      val repository: PostRepository) {
+
+    val logger = LogFactory.getLog(BlogController::class.java)!!
 
     @GetMapping()
     fun getPosts(): List<Post> {
@@ -47,6 +50,7 @@ class BlogController(@Autowired
             return ResponseEntity(HttpStatus.ACCEPTED)
         }
 
+        logger.debug("Post not found for id: $id")
         return ResponseEntity(HttpStatus.NOT_FOUND)
     }
 }
